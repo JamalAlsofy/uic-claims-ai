@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup Label="Runtime">
     <PackageVersion Include="Oracle.ManagedDataAccess.Core" Version="23.6.1" />
-    <PackageVersion Include="Dapper" Version="2.1.35" />
+    <PackageVersion Include="Dapper" Version="2.1.89" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.0" />
