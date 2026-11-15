@@ -1,0 +1,118 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/Directory.Packages.props') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore
+        run: dotnet restore Uic.Claims.Ai.sln
+
+      - name: Build (warnings are errors)
+        run: dotnet build Uic.Claims.Ai.sln --no-restore -c Release
+
+      - name: Unit tests
+        run: >
+          dotnet test Uic.Claims.Ai.sln --no-build -c Release
+          --logger "trx;LogFileName=tests.trx"
+          --collect:"XPlat Code Coverage"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: "**/TestResults/**"
+          retention-days: 7
+
+  eval:
+    # Golden-set check. Structural mode runs everywhere; live mode only when the
+    # secret exists, so a fork PR cannot spend the provider budget.
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Structural check
+        run: dotnet run --project tests/Eval -c Release
+
+      - name: Live evaluation
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+        run: dotnet run --project tests/Eval -c Release -- --threshold=0.85
+
+  invariants:
+    # Two rules that are cheap to check and expensive to break.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No direct writes to the core schema
+        run: |
+          hits=$(grep -rniE '\b(update|delete[[:space:]]+from|insert[[:space:]]+into|alter|drop|truncate)\b[[:space:]]+(ins|core)\.' \
+                 db/ src/ --include=*.sql --include=*.cs | grep -v '^\S*:[0-9]*: *--' || true)
+          if [ -n "$hits" ]; then
+            echo "Found statements that write to the core schema:"; echo "$hits"; exit 1
+          fi
+          echo "OK: no writes to ins.*"
+
+      - name: No credentials in the tree
+        run: |
+          if git grep -nEI '(sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----)' -- . ; then
+            echo "Looks like a credential is committed."; exit 1
+          fi
+          echo "OK: no obvious secrets"
+
+      - name: Required documents exist
+        run: |
+          for f in README.md docs/architecture.md docs/runbook.md db/README.md; do
+            test -f "$f" || { echo "missing $f"; exit 1; }
+          done
+
+  mutation:
+    # Slow, so manual or main-only. Kill rate is the only real measure of whether
+    # the rule tests would notice a broken threshold.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: dotnet tool restore
+      - run: >
+          dotnet stryker --project src/core/Uic.Claims.Ai.Core.csproj
+          --threshold-high 75 --threshold-low 60

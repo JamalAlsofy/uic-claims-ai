@@ -1,0 +1,32 @@
+sequenceDiagram
+    autonumber
+    actor O as Officer
+    participant W as Angular
+    participant A as API
+    participant R as RuleSet
+    participant P as Provider
+    participant D as Oracle (app_ai)
+
+    O->>W: opens claim 1001
+    W->>A: POST /api/ai/claims/1001/triage
+    A->>D: select from v_claim_context
+    D-->>A: amount, age, history (no PII)
+
+    A->>R: evaluate
+    alt a rule matches
+        R-->>A: suggestion, no cost
+    else no rule matches
+        A->>P: prompt + payload
+        P-->>A: JSON
+        A->>A: parse, clamp, apply limit guard
+    end
+
+    A->>D: insert ai_suggestions
+    A->>D: insert audit_trail
+    A->>D: pr_flag_for_review (row lock) when needed
+    A-->>W: suggestion
+    W-->>O: shown with risk band
+
+    O->>W: accept or override
+    W->>A: POST /feedback
+    A->>D: insert claim_decisions (decided_by from gateway header)

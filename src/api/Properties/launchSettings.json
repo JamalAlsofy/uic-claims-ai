@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Uic.Claims.Ai.Api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:4816;http://localhost:4817"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{cs,csproj,props,targets}]
+indent_size = 4
+
+[*.{json,yml,yaml,md,ts,html,css}]
+indent_size = 2
+
+[*.cs]
+# Keep usings explicit in files that need them; global usings are opted-in per project.
+dotnet_sort_system_directives_first = true
+csharp_style_namespace_declarations = file_scoped:suggestion
+
+# We treat warnings as errors, so keep the noisy-but-intentional ones relaxed.
+dotnet_diagnostic.CA1062.severity = suggestion   # we validate at the boundary instead
+dotnet_diagnostic.CA1848.severity = none         # LoggerMessage source-gen not worth it at this size
+dotnet_diagnostic.IDE0058.severity = none        # unused expression value
+
+[*.md]
+trim_trailing_whitespace = false

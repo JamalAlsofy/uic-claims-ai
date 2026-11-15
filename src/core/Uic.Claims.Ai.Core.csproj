@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <RootNamespace>Uic.Claims.Ai.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Only logging. Everything else in this project is plain BCL so the domain
+         layer stays portable and trivially testable. -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+</Project>

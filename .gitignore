@@ -1,0 +1,36 @@
+# build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.user
+
+# test output
+TestResults/
+coverage*.xml
+coverage*.json
+*.trx
+StrykerOutput/
+
+# tooling caches
+.vs/
+.idea/
+.vscode/
+*.swp
+
+# node (web/)
+node_modules/
+dist/
+.angular/
+
+# local configuration - never commit anything holding a key or a real TNS entry
+appsettings.Local.json
+*.local.json
+.env
+.env.*
+secrets/
+
+# OS
+.DS_Store
+Thumbs.db

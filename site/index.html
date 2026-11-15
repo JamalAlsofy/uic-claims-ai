@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>طبقة فرز مطالبات — جمال الصوفي</title>
+<style>
+  :root{
+    --ink:#18222e; --body:#3d4a58; --muted:#6b7a8a; --line:#e3e7ec;
+    --paper:#ffffff; --canvas:#f6f7f9; --accent:#0b5f8a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--canvas); color:var(--body);
+    font-family:"Segoe UI",Tahoma,system-ui,sans-serif;
+    line-height:1.85; font-size:16.5px;
+  }
+  .wrap{max-width:840px;margin:0 auto;padding:0 22px}
+  header{border-bottom:1px solid var(--line);background:var(--paper);padding:52px 0 44px}
+  header .kicker{color:var(--muted);font-size:13.5px;letter-spacing:.4px;margin:0 0 14px}
+  h1{font-size:clamp(24px,4vw,34px);line-height:1.35;margin:0 0 16px;color:var(--ink);font-weight:700}
+  .dek{margin:0;max-width:640px;color:var(--body)}
+  .meta{margin-top:26px;font-size:13.5px;color:var(--muted)}
+  .meta a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(11,95,138,.3)}
+  main{background:var(--paper);border-bottom:1px solid var(--line)}
+  section{padding:44px 0;border-bottom:1px solid var(--line)}
+  section:last-child{border-bottom:0}
+  h2{font-size:19px;margin:0 0 14px;color:var(--ink);font-weight:700}
+  p{margin:0 0 14px}
+  ul,ol{margin:0 0 14px;padding-inline-start:22px}
+  li{margin-bottom:8px}
+  code{background:#eef1f4;padding:1px 6px;border-radius:4px;font-size:.9em;font-family:ui-monospace,Menlo,Consolas,monospace;direction:ltr;display:inline-block}
+  pre{background:#1b2430;color:#e6edf3;padding:16px 18px;border-radius:8px;overflow-x:auto;
+      font-size:13.5px;direction:ltr;text-align:left;line-height:1.7}
+  pre code{background:none;padding:0;color:inherit}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;margin:0 0 14px}
+  th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th{color:var(--ink);font-weight:600;font-size:13.5px;background:#fafbfc}
+  .note{border-inline-start:3px solid var(--accent);background:#f4f8fa;padding:14px 18px;
+        margin:0 0 16px;font-size:15px}
+  .todo{color:var(--muted);font-size:14.5px}
+  footer{padding:34px 0 46px;color:var(--muted);font-size:14px}
+  footer a{color:var(--accent);text-decoration:none}
+  @media (max-width:620px){ section{padding:32px 0} header{padding:36px 0 30px} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">مشروع — جمال الصوفي</p>
+    <h1>طبقة فرز مطالبات تعمل بجانب نظام تأمين قائم، دون المساس به</h1>
+    <p class="dek">
+      محرك قواعد يحسم الحالات الواضحة، ونموذج لغوي يتعامل مع الباقي، وموظف يعتمد كل قرار.
+      القيد الأساسي في التصميم: مخطط النظام القديم للقراءة فقط من جهتنا.
+    </p>
+    <p class="meta">
+      <a href="https://github.com/JamalAlsofy/uic-claims-ai">الكود على GitHub</a> ·
+      ASP.NET Core · Angular · Oracle PL/SQL · الإصدار 0.9.2
+    </p>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <h2>لماذا بُني بهذا الشكل</h2>
+      <p>
+        العائق أمام الذكاء الاصطناعي في شركات التأمين ليس جودة النموذج. العائق أن لا أحد
+        يريد أن يكون الشخص الذي غيّر جدول المطالبات. لذلك بدأت من هذا القيد وبنيت ما بقي حوله.
+      </p>
+      <div class="note">
+        لا كتابة على جداول النظام القديم. القراءة عبر عرض واحد، والكتابة في مخطط مستقل،
+        وتغيير حالة مطالبة يمر عبر إجراء يملكه فريق النظام الأصلي.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>مسار الطلب</h2>
+<pre><code>POST /api/ai/claims/1001/triage
+  |
+  +-- v_claim_context        قراءة صف واحد (بلا بيانات هوية)
+  |
+  +-- محرك القواعد           مسوّاة؟ متكرر؟ مسار سريع؟   -> ينتهي هنا 60-70%
+  |
+  +-- النموذج                  فقط للمساحة الرمادية
+  |
+  +-- تحقق صارم               تصنيف من قائمة معروفة، درجة بين 0 و 1
+  |
+  +-- قيد السقف المالي        يتجاوز حد الوثيقة؟ مراجعة بشرية إلزاماً
+  |
+  +-- app_ai                  اقتراح + تدقيق + تصعيد بقفل صف</code></pre>
+      <p>
+        أي فشل في خطوة النموذج لا يُسقط الشاشة: يُسجَّل السبب وتعود المطالبة للمسار اليدوي
+        بعلامة واضحة. الموظف الذي يرى رسالة خطأ حمراء يتوقف ويتصل بالدعم؛ والموظف الذي
+        يرى «تعذّر التحليل، راجع يدوياً» يكمل عمله.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>أربعة قرارات موثّقة</h2>
+      <table>
+        <tr><th>القرار</th><th>السبب باختصار</th></tr>
+        <tr><td>القواعد قبل النموذج</td><td>قابل للتفسير أمام المدقّق، وصفر تكلفة لأغلب الحالات</td></tr>
+        <tr><td>لا كتابة على المخطط القديم</td><td>نظام يعمل منذ سنوات بمُشغّلات لا نراها من الخارج</td></tr>
+        <tr><td>المزوّد قابل للاستبدال</td><td>قرار الشراء وسؤال حماية البيانات ليسا بيدي</td></tr>
+        <tr><td>الموظف يوقّع دائماً</td><td>القرار الذي يُدفع بعده خطأ أغلى من المراجعة قبله</td></tr>
+      </table>
+      <p class="todo">
+        كل قرار مكتوب في <code>docs/adr/</code> بالسياق والبدائل المرفوضة والتبعات، وليس
+        بالوصف فقط.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>ما يُقاس</h2>
+      <table>
+        <tr><th>المؤشر</th><th>الحد</th><th>أين يُحسب</th></tr>
+        <tr><td>صلاحية مخرج JSON</td><td>≥ 99%</td><td>مجموعة ذهبية في CI</td></tr>
+        <tr><td>دقة التصنيف</td><td>≥ 0.85</td><td>نفس المجموعة، 14 حالة منها 3 محاولات حقن</td></tr>
+        <tr><td>حقن تعليمات ناجح</td><td>0</td><td>يوقف البناء</td></tr>
+        <tr><td>نسبة اعتماد الموظفين</td><td>تُقاس ولا تُستهدف</td><td><code>app_ai.v_acceptance</code></td></tr>
+        <tr><td>كتابة على <code>ins.*</code></td><td>0</td><td>فحص نصّي في CI</td></tr>
+      </table>
+      <p class="todo">
+        النسبة الأخيرة مقصودة: قياس الاعتماد هدفه تحسين القواعد، لا تقليص المراجعة.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>ما لم يُنجز بعد</h2>
+      <ul>
+        <li>الاسترجاع على نصوص الوثائق (متجهات Oracle 23ai) — مصمّم ولم يُكتب.</li>
+        <li>اختبار حمل على حجم مطالبات واقعي.</li>
+        <li>مقارنة تشغيل ظلّي مع الطابور اليدوي الحالي قبل أي قرار توسيع.</li>
+      </ul>
+      <p style="margin-bottom:0">
+        المستودع مفتوح للمراجعة، ونقاط الضعف مكتوبة فيه صراحة بدل أن تُترك ليُكتشفها القارئ.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    جمال الصوفي — تحليل أنظمة، .NET وAngular، تكامل Oracle ·
+    <a href="mailto:jamal.alsoofy2030@gmail.com">jamal.alsoofy2030@gmail.com</a> ·
+    <a href="https://github.com/JamalAlsofy">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>

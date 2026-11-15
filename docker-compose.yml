@@ -1,0 +1,33 @@
+# Local stack. Oracle takes about a minute to become healthy, the API waits for it.
+services:
+  oracle:
+    image: gvenzl/oracle-free:23-slim
+    environment:
+      ORACLE_PASSWORD: dev_sys_password
+      APP_USER: app_ai
+      APP_USER_PASSWORD: app_ai_dev
+    ports:
+      - "1521:1521"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d:ro
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 15s
+      timeout: 10s
+      retries: 30
+
+  api:
+    build: .
+    depends_on:
+      oracle:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Ai__Enabled: "false"          # no key locally; the manual path is the whole point
+      Oracle__ConnectionString: "User Id=app_ai;Password=app_ai_dev;Data Source=oracle:1521/FREEPDB1;Pooling=true;Connection Timeout=60;"
+    ports:
+      - "5080:8080"
+
+volumes:
+  oracle-data:

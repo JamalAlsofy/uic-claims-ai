@@ -1,0 +1,7 @@
+flowchart TD
+    API["api<br/>endpoints · worker · config"] --> INF["infrastructure<br/>provider client · Oracle · prompts"]
+    INF --> CORE["core<br/>rules · parser · contracts"]
+    INF -.->|"enforced by ArchitectureTests"| CORE
+    API --> X1["Swashbuckle"]
+    INF --> X2["Dapper · Oracle.ManagedDataAccess"]
+    CORE --> X3["Logging.Abstractions only"]

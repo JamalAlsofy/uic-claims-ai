@@ -1,0 +1,26 @@
+@host = http://localhost:5080
+@officer = 1042
+
+### health
+GET {{host}}/health
+
+### triage a claim
+POST {{host}}/api/ai/claims/1001/triage
+X-Officer-Id: {{officer}}
+
+### record that the officer accepted the suggestion
+POST {{host}}/api/ai/claims/1001/feedback
+X-Officer-Id: {{officer}}
+Content-Type: application/json
+
+{ "outcome": "accepted", "finalCategory": null, "comment": null }
+
+### record an override
+POST {{host}}/api/ai/claims/1001/feedback
+X-Officer-Id: {{officer}}
+Content-Type: application/json
+
+{ "outcome": "overridden", "finalCategory": "WORK_INJURY", "comment": "المستند يوضح إصابة عمل" }
+
+### streamed summary (curl -N to see tokens arrive)
+GET {{host}}/api/ai/claims/1001/summary/stream
